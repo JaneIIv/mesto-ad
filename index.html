@@ -51,9 +51,15 @@
                 name="user-name"
                 id="user-name"
                 class="popup__input popup__input_type_name"
+                data-error-message="Разрешены только латинские, кириллические буквы, знаки дефиса и пробелы"
                 placeholder="Имя"
+                required
+                pattern="^[A-Za-zА-Яа-яЁё\s\-]+$"
+                minlength="2"
+                maxlength="40"
               />
             </label>
+            <span class="popup__error" id="user-name-error"></span>
             <label class="popup__label">
               <input
                 type="text"
@@ -61,8 +67,11 @@
                 id="user-description"
                 class="popup__input popup__input_type_description"
                 placeholder="Занятие"
+                minlength="2"
+                maxlength="200"
               />
             </label>
+            <span class="popup__error" id="user-description-error"></span>
             <button
               type="submit"
               class="button popup__button popup__button_disabled" 
@@ -86,8 +95,14 @@
                 id="place-name"
                 class="popup__input popup__input_type_card-name"
                 placeholder="Название"
+                required
+                minlength="2"
+                maxlength="30"
+                pattern="^[A-Za-zА-Яа-яЁё\s\-]+$"
+                data-error-message="Разрешены только латинские, кириллические буквы, знаки дефиса и пробелы"
               />
             </label>
+            <span class="popup__error" id="place-name-error"></span>
             <label class="popup__label">
               <input
                 type="url"
@@ -95,8 +110,10 @@
                 id="place-link"
                 class="popup__input popup__input_type_url"
                 placeholder="Ссылка на картинку"
+                required
               />
             </label>
+            <span class="popup__error" id="place-link-error"></span>
             <button
               type="submit"
               class="button popup__button popup__button_disabled"
@@ -143,8 +160,10 @@
                 id="user-avatar"
                 class="popup__input popup__input_type_avatar"
                 placeholder="Ссылка на изображение"
+                required
               />
             </label>
+            <span class="popup__error" id="user-avatar-error"></span>
             <button
               type="submit"
               class="button popup__button popup__button_disabled"
