@@ -1,19 +1,19 @@
 const showInputError = (formElement, inputElement, errorMessage, settings) => {
-  const errorElement = formElement.querySelector(`.${inputElement.id}-error`);
+  const errorElement = formElement.querySelector(`#${inputElement.id}-error`);
   inputElement.classList.add(settings.inputErrorClass);
   errorElement.textContent = errorMessage;
   errorElement.classList.add(settings.errorClass);
 };
 
 const hideInputError = (formElement, inputElement, settings) => {
-  const errorElement = formElement.querySelector(`.${inputElement.id}-error`);
+  const errorElement = formElement.querySelector(`#${inputElement.id}-error`);
   inputElement.classList.remove(settings.inputErrorClass);
   errorElement.classList.remove(settings.errorClass);
   errorElement.textContent='';
 };
 
 const checkInputValidity = (formElement, inputElement, settings) => {
-  if (inputElement.name === 'name' || inputElement.name === 'title') {
+  if (inputElement.dataset.errorMessage) {
     const customPattern = /^[A-Za-zА-Яа-яёЁ\s\-]*$/;
     if (!customPattern.test(inputElement.value)) {
       const errorMessage = inputElement.dataset.errorMessage || 'Разрешены только латинские, кириллические буквы, знаки дефиса и пробелы';
@@ -30,7 +30,7 @@ const checkInputValidity = (formElement, inputElement, settings) => {
 
 const hasInvalidInput = (inputList) => {
   return inputList.some((inputElement) => {
-    if (inputElement.name === 'name' || inputElement.name === 'title') {
+    if (inputElement.dataset.errorMessage) {
       const customPattern = /^[A-Za-zА-Яа-яёЁ\s\-]*$/;
       if (!customPattern.test(inputElement.value)) {
         return true;
@@ -63,9 +63,6 @@ const setEventListeners = (formElement, settings) => {
   const buttonElement = formElement.querySelector(settings.submitButtonSelector);
   toggleButtonState(inputList, buttonElement, settings);
   inputList.forEach((inputElement) => {
-    if (inputElement.name === 'name' || inputElement.name === 'title') {
-      inputElement.dataset.errorMessage = 'Разрешены только латинские, кириллические буквы, знаки дефиса и пробелы';
-    }
     inputElement.addEventListener('input', () => {
       checkInputValidity(formElement, inputElement, settings);
       toggleButtonState(inputList, buttonElement, settings);

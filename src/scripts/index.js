@@ -52,7 +52,7 @@ const handleProfileFormSubmit = (evt) => {
   closeModalWindow(profileFormModalWindow);
 };
 
-const handleAvatarFromSubmit = (evt) => {
+const handleAvatarFormSubmit = (evt) => {
   evt.preventDefault();
   profileAvatar.style.backgroundImage = `url(${avatarInput.value})`;
   closeModalWindow(avatarFormModalWindow);
@@ -80,21 +80,24 @@ const handleCardFormSubmit = (evt) => {
 // EventListeners
 profileForm.addEventListener("submit", handleProfileFormSubmit);
 cardForm.addEventListener("submit", handleCardFormSubmit);
-avatarForm.addEventListener("submit", handleAvatarFromSubmit);
+avatarForm.addEventListener("submit", handleAvatarFormSubmit);
 
 openProfileFormButton.addEventListener("click", () => {
   profileTitleInput.value = profileTitle.textContent;
   profileDescriptionInput.value = profileDescription.textContent;
+  clearValidation(profileForm, validationSettings);
   openModalWindow(profileFormModalWindow);
 });
 
 profileAvatar.addEventListener("click", () => {
   avatarForm.reset();
+  clearValidation(avatarForm, validationSettings);
   openModalWindow(avatarFormModalWindow);
 });
 
 openCardFormButton.addEventListener("click", () => {
   cardForm.reset();
+  clearValidation(cardForm, validationSettings);
   openModalWindow(cardFormModalWindow);
 });
 
