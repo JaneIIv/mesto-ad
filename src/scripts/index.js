@@ -5,8 +5,8 @@
 
   Из index.js не допускается что то экспортировать
 */
-
-import { createCardElement, deleteCard, likeCard } from "./components/card.js";
+import {getUserInfo, getCardList, setUserInfo, setUserAvatar, addNewCard, deleteCardApi} from "./api.js";
+import { createCardElement } from "./components/card.js";
 import { openModalWindow, closeModalWindow, setCloseModalWindowEventListeners } from "./components/modal.js";
 import { enableValidation, clearValidation } from "./components/validation.js";
 
@@ -89,6 +89,12 @@ const handleCardFormSubmit = (evt) => {
     })
 };
 
+const handleDeleteCardClick = (cardElement, cardId) => {
+  cardToDelete = cardElement;
+  cardIdToDelete = cardId;
+  openModalWindow(removeCardPopup);
+};
+
 // EventListeners
 profileForm.addEventListener("submit", handleProfileFormSubmit);
 cardForm.addEventListener("submit", handleCardFormSubmit);
@@ -111,6 +117,19 @@ openCardFormButton.addEventListener("click", () => {
   cardForm.reset();
   clearValidation(cardForm, validationSettings);
   openModalWindow(cardFormModalWindow);
+});
+
+removeCardForm.addEventListener("submit", (evt) => {
+  evt.preventDefault();
+  deleteCardApi(cardIdToDelete)
+    .then(() => {
+      cardToDelete.remove();
+      closeModalWindow(removeCardPopup);
+      cardToDelete = null;
+      cardIdToDelete = null;
+    })
+    .catch((err) => console.error('Ошибка удаления:', err))
+    .finally(() => renderLoading(submitButton, false, 'Удаление...', 'Да'));
 });
 
 // отображение карточек

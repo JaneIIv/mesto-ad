@@ -48,3 +48,10 @@ export const addNewCard = (name, link) => {
     body: JSON.stringify({ name, link })
   }).then(getResponseData);
 };
+
+export const deleteCardApi = (cardId) => {
+  return fetch(`${config.baseUrl}/cards/${cardId}`, {
+    method: 'DELETE',
+    headers: config.headers
+  }).then(getResponseData);
+};

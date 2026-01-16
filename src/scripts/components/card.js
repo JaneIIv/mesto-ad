@@ -1,11 +1,3 @@
-export const likeCard = (likeButton) => {
-  likeButton.classList.toggle("card__like-button_is-active");
-};
-
-export const deleteCard = (cardElement) => {
-  cardElement.remove();
-};
-
 const getTemplate = () => {
   return document
     .getElementById("card-template")
@@ -26,12 +18,16 @@ export const createCardElement = (
   cardImage.alt = data.name;
   cardElement.querySelector(".card__title").textContent = data.name;
 
+  if (data.owner._id !== userId) {
+    deleteButton.remove();
+  }
+
   if (onLikeIcon) {
     likeButton.addEventListener("click", () => onLikeIcon(likeButton));
   }
 
-  if (onDeleteCard) {
-    deleteButton.addEventListener("click", () => onDeleteCard(cardElement));
+  if (onDeleteCard && data.owner._id === userId) {
+    deleteButton.addEventListener("click", () => onDeleteCard(cardElement, data._id));
   }
 
   if (onPreviewPicture) {
