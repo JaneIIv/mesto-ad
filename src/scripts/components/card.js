@@ -7,7 +7,8 @@ const getTemplate = () => {
 
 export const createCardElement = (
   data,
-  { onPreviewPicture, onLikeIcon, onDeleteCard }
+  { onPreviewPicture, onLikeCard, onDeleteCard },
+  currentUserId 
 ) => {
   const cardElement = getTemplate();
   const likeButton = cardElement.querySelector(".card__like-button");
@@ -18,13 +19,16 @@ export const createCardElement = (
   cardImage.src = data.link;
   cardImage.alt = data.name;
   cardElement.querySelector(".card__title").textContent = data.name;
-
-  const isLiked = data.likes.some(user => user._id === userId);
+  
+  likeCountElement.textContent = data.likes ? data.likes.length : 0;
+  
+  const isLiked = data.likes && data.likes.some(user => user._id === currentUserId);
   if (isLiked) {
     likeButton.classList.add("card__like-button_is-active");
   }
 
-  if (data.owner._id !== userId) {
+  const isOwner = data.owner && data.owner._id === currentUserId;
+  if (!isOwner) {
     deleteButton.remove();
   }
 
@@ -32,7 +36,7 @@ export const createCardElement = (
     likeButton.addEventListener("click", () => onLikeCard(likeButton, data._id, likeCountElement));
   }
 
-  if (onDeleteCard && data.owner._id === userId) {
+  if (onDeleteCard && isOwner) {
     deleteButton.addEventListener("click", () => onDeleteCard(cardElement, data._id));
   }
 

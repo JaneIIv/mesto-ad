@@ -9,7 +9,7 @@ const hideInputError = (formElement, inputElement, settings) => {
   const errorElement = formElement.querySelector(`#${inputElement.id}-error`);
   inputElement.classList.remove(settings.inputErrorClass);
   errorElement.classList.remove(settings.errorClass);
-  errorElement.textContent='';
+  errorElement.textContent = '';
 };
 
 const checkInputValidity = (formElement, inputElement, settings) => {
@@ -41,16 +41,22 @@ const hasInvalidInput = (inputList) => {
 };
 
 const disableSubmitButton = (buttonElement, settings) => {
-  buttonElement.disabled = true;
-  buttonElement.classList.add(settings.inactiveButtonClass);
+  if (buttonElement) { 
+    buttonElement.disabled = true;
+    buttonElement.classList.add(settings.inactiveButtonClass);
+  }
 };
 
 const enableSubmitButton = (buttonElement, settings) => {
-  buttonElement.disabled = false;
-  buttonElement.classList.remove(settings.inactiveButtonClass);
+  if (buttonElement) { 
+    buttonElement.disabled = false;
+    buttonElement.classList.remove(settings.inactiveButtonClass);
+  }
 };
 
 const toggleButtonState = (inputList, buttonElement, settings) => {
+  if (!buttonElement) return; 
+  
   if (hasInvalidInput(inputList)) {
     disableSubmitButton(buttonElement, settings);
   } else {
@@ -61,7 +67,11 @@ const toggleButtonState = (inputList, buttonElement, settings) => {
 const setEventListeners = (formElement, settings) => {
   const inputList = Array.from(formElement.querySelectorAll(settings.inputSelector));
   const buttonElement = formElement.querySelector(settings.submitButtonSelector);
+  
+  if (inputList.length === 0) return;
+  
   toggleButtonState(inputList, buttonElement, settings);
+  
   inputList.forEach((inputElement) => {
     inputElement.addEventListener('input', () => {
       checkInputValidity(formElement, inputElement, settings);
@@ -73,9 +83,11 @@ const setEventListeners = (formElement, settings) => {
 const clearValidation = (formElement, settings) => {
   const inputList = Array.from(formElement.querySelectorAll(settings.inputSelector));
   const buttonElement = formElement.querySelector(settings.submitButtonSelector);
+  
   inputList.forEach((inputElement) => {
     hideInputError(formElement, inputElement, settings);
   });
+  
   disableSubmitButton(buttonElement, settings);
 };
 
@@ -89,4 +101,4 @@ const enableValidation = (settings) => {
   });
 };
 
-export {enableValidation, clearValidation}
+export {enableValidation, clearValidation};

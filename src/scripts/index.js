@@ -10,6 +10,9 @@ import { createCardElement } from "./components/card.js";
 import { openModalWindow, closeModalWindow, setCloseModalWindowEventListeners } from "./components/modal.js";
 import { enableValidation, clearValidation } from "./components/validation.js";
 
+
+let currentUserId = null;
+
 // DOM узлы
 const placesWrap = document.querySelector(".places__list");
 const profileFormModalWindow = document.querySelector(".popup_type_edit");
@@ -42,8 +45,6 @@ const removeCardForm = removeCardPopup.querySelector(".popup__form");
 let cardToDelete = null;
 let cardIdToDelete = null
 
-let currentUserId = null;
-
 const handlePreviewPicture = ({ name, link }) => {
   imageElement.src = link;
   imageElement.alt = name;
@@ -64,7 +65,7 @@ const handleProfileFormSubmit = (evt) => {
     })
 };
 
-const handleAvatarFromSubmit = (evt) => {
+const handleAvatarFormSubmit = (evt) => {
   evt.preventDefault();
   setUserAvatar(avatarInput.value)
     .then((userData) => {
@@ -86,7 +87,7 @@ const handleCardFormSubmit = (evt) => {
           onPreviewPicture: handlePreviewPicture,
           onLikeCard: handleLikeCard,
           onDeleteCard: handleDeleteCardClick,
-        }, currentUserId)
+        }, currentUserId) 
       );
       closeModalWindow(cardFormModalWindow);
       cardForm.reset();
@@ -172,13 +173,14 @@ Promise.all([getUserInfo(), getCardList()])
     profileTitle.textContent = userData.name;
     profileDescription.textContent = userData.about;
     profileAvatar.style.backgroundImage = `url(${userData.avatar})`;
+    
     cards.forEach((cardData) => {
       placesWrap.append(
         createCardElement(cardData, {
           onPreviewPicture: handlePreviewPicture,
           onLikeCard: handleLikeCard,
           onDeleteCard: handleDeleteCardClick,
-        }, currentUserId)
+        }, currentUserId) 
       );
     });
   })
