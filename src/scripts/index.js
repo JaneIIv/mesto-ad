@@ -45,6 +45,10 @@ const removeCardForm = removeCardPopup.querySelector(".popup__form");
 let cardToDelete = null;
 let cardIdToDelete = null
 
+const renderLoading = (button, isLoading, loadingText = 'Сохранение...', defaultText = 'Сохранить') => {
+  button.textContent = isLoading ? loadingText : defaultText;
+};
+
 const handlePreviewPicture = ({ name, link }) => {
   imageElement.src = link;
   imageElement.alt = name;
@@ -53,7 +57,9 @@ const handlePreviewPicture = ({ name, link }) => {
 };
 
 const handleProfileFormSubmit = (evt) => {
-  evt.preventDefault();;
+  evt.preventDefault();
+  const submitButton = evt.submitter;
+  renderLoading(submitButton, true);
   setUserInfo(profileTitleInput.value, profileDescriptionInput.value)
     .then((userData) => {
       profileTitle.textContent = userData.name;
@@ -63,10 +69,15 @@ const handleProfileFormSubmit = (evt) => {
     .catch((err) => {
       console.error('Ошибка:', err)
     })
+    .finally(() => {
+      renderLoading(submitButton, false)
+    });
 };
 
 const handleAvatarFormSubmit = (evt) => {
   evt.preventDefault();
+  const submitButton = evt.submitter;
+  renderLoading(submitButton, true);
   setUserAvatar(avatarInput.value)
     .then((userData) => {
       profileAvatar.style.backgroundImage = `url(${userData.avatar})`;
@@ -76,10 +87,15 @@ const handleAvatarFormSubmit = (evt) => {
     .catch((err) => {
       console.error('Ошибка:', err)
     })
+    .finally(() => {
+      renderLoading(submitButton, false)
+    });
 };
 
 const handleCardFormSubmit = (evt) => {
   evt.preventDefault();
+  const submitButton = evt.submitter;
+  renderLoading(submitButton, true, 'Создание...', 'Создать');
   addNewCard(cardNameInput.value, cardLinkInput.value)
     .then((newCard) => {
       placesWrap.prepend(
@@ -95,6 +111,9 @@ const handleCardFormSubmit = (evt) => {
     .catch((err) => {
       console.error('Ошибка:', err)
     })
+    .finally(() => {
+      renderLoading(submitButton, false, 'Создание...', 'Создать')
+    });
 };
 
 const handleDeleteCardClick = (cardElement, cardId) => {
@@ -139,6 +158,8 @@ openCardFormButton.addEventListener("click", () => {
 
 removeCardForm.addEventListener("submit", (evt) => {
   evt.preventDefault();
+  const submitButton = evt.submitter;
+  renderLoading(submitButton, true, 'Удаление...', 'Да');
   deleteCardApi(cardIdToDelete)
     .then(() => {
       cardToDelete.remove();
@@ -147,7 +168,9 @@ removeCardForm.addEventListener("submit", (evt) => {
       cardIdToDelete = null;
     })
     .catch((err) => console.error('Ошибка удаления:', err))
-    .finally(() => renderLoading(submitButton, false, 'Удаление...', 'Да'));
+    .finally(() => {
+      renderLoading(submitButton, false, 'Удаление...', 'Да')
+    });
 });
 
 //настраиваем обработчики закрытия попапов
