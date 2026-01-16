@@ -13,17 +13,23 @@ export const createCardElement = (
   const likeButton = cardElement.querySelector(".card__like-button");
   const deleteButton = cardElement.querySelector(".card__control-button_type_delete");
   const cardImage = cardElement.querySelector(".card__image");
+  const likeCountElement = cardElement.querySelector(".card__like-count");
 
   cardImage.src = data.link;
   cardImage.alt = data.name;
   cardElement.querySelector(".card__title").textContent = data.name;
 
+  const isLiked = data.likes.some(user => user._id === userId);
+  if (isLiked) {
+    likeButton.classList.add("card__like-button_is-active");
+  }
+
   if (data.owner._id !== userId) {
     deleteButton.remove();
   }
 
-  if (onLikeIcon) {
-    likeButton.addEventListener("click", () => onLikeIcon(likeButton));
+  if (onLikeCard) {
+    likeButton.addEventListener("click", () => onLikeCard(likeButton, data._id, likeCountElement));
   }
 
   if (onDeleteCard && data.owner._id === userId) {

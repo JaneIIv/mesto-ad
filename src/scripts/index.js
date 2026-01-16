@@ -5,7 +5,7 @@
 
   Из index.js не допускается что то экспортировать
 */
-import {getUserInfo, getCardList, setUserInfo, setUserAvatar, addNewCard, deleteCardApi} from "./api.js";
+import { getUserInfo, getCardList, setUserInfo, setUserAvatar, addNewCard, deleteCardApi, changeLikeCardStatus} from "./api.js";
 import { createCardElement } from "./components/card.js";
 import { openModalWindow, closeModalWindow, setCloseModalWindowEventListeners } from "./components/modal.js";
 import { enableValidation, clearValidation } from "./components/validation.js";
@@ -36,6 +36,13 @@ const profileAvatar = document.querySelector(".profile__image");
 const avatarFormModalWindow = document.querySelector(".popup_type_edit-avatar");
 const avatarForm = avatarFormModalWindow.querySelector(".popup__form");
 const avatarInput = avatarForm.querySelector(".popup__input");
+
+const removeCardPopup = document.querySelector(".popup_type_remove-card");
+const removeCardForm = removeCardPopup.querySelector(".popup__form");
+let cardToDelete = null;
+let cardIdToDelete = null
+
+let currentUserId = null;
 
 const handlePreviewPicture = ({ name, link }) => {
   imageElement.src = link;
@@ -95,6 +102,16 @@ const handleDeleteCardClick = (cardElement, cardId) => {
   openModalWindow(removeCardPopup);
 };
 
+const handleLikeCard = (likeButton, cardId, likeCountElement) => {
+  const isLiked = likeButton.classList.contains("card__like-button_is-active");
+  changeLikeCardStatus(cardId, isLiked)
+    .then((updatedCard) => {
+      likeButton.classList.toggle("card__like-button_is-active");
+      likeCountElement.textContent = updatedCard.likes.length;
+    })
+    .catch((err) => console.error('Ошибка лайка:', err));
+};
+
 // EventListeners
 profileForm.addEventListener("submit", handleProfileFormSubmit);
 cardForm.addEventListener("submit", handleCardFormSubmit);
@@ -131,17 +148,6 @@ removeCardForm.addEventListener("submit", (evt) => {
     .catch((err) => console.error('Ошибка удаления:', err))
     .finally(() => renderLoading(submitButton, false, 'Удаление...', 'Да'));
 });
-
-// отображение карточек
-/// initialCards.forEach((data) => {
-///  placesWrap.append(
-//    createCardElement(data, {
-//      onPreviewPicture: handlePreviewPicture,
-//      onLikeIcon: likeCard,
-//      onDeleteCard: deleteCard,
-//    })
-//  );
-//});
 
 //настраиваем обработчики закрытия попапов
 const allPopups = document.querySelectorAll(".popup");
