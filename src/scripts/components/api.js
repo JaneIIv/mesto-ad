@@ -40,3 +40,11 @@ export const setUserAvatar = (avatar) => {
     body: JSON.stringify({ avatar })
   }).then(getResponseData);
 };
+
+export const addNewCard = (name, link) => {
+  return fetch(`${config.baseUrl}/cards`, {
+    method: 'POST',
+    headers: config.headers,
+    body: JSON.stringify({ name, link })
+  }).then(getResponseData);
+};

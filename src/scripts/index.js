@@ -72,21 +72,21 @@ const handleAvatarFromSubmit = (evt) => {
 
 const handleCardFormSubmit = (evt) => {
   evt.preventDefault();
-  placesWrap.prepend(
-    createCardElement(
-      {
-        name: cardNameInput.value,
-        link: cardLinkInput.value,
-      },
-      {
-        onPreviewPicture: handlePreviewPicture,
-        onLikeIcon: likeCard,
-        onDeleteCard: deleteCard,
-      }
-    )
-  );
-
-  closeModalWindow(cardFormModalWindow);
+  addNewCard(cardNameInput.value, cardLinkInput.value)
+    .then((newCard) => {
+      placesWrap.prepend(
+        createCardElement(newCard, {
+          onPreviewPicture: handlePreviewPicture,
+          onLikeCard: handleLikeCard,
+          onDeleteCard: handleDeleteCardClick,
+        }, currentUserId)
+      );
+      closeModalWindow(cardFormModalWindow);
+      cardForm.reset();
+    })
+    .catch((err) => {
+      console.error('Ошибка:', err)
+    })
 };
 
 // EventListeners
