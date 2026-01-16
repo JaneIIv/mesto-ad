@@ -15,3 +15,9 @@ export const getUserInfo = () => {
     headers: config.headers, 
   }).then(getResponseData); 
 };
+
+export const getCardList = () => {
+  return fetch(`${config.baseUrl}/cards`, {
+    headers: config.headers
+  }).then(getResponseData);
+};
