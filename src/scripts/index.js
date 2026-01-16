@@ -42,6 +42,14 @@ const avatarInput = avatarForm.querySelector(".popup__input");
 
 const removeCardPopup = document.querySelector(".popup_type_remove-card");
 const removeCardForm = removeCardPopup.querySelector(".popup__form");
+
+const usersStatsModalWindow = document.querySelector(".popup_type_info");
+const usersStatsModalTitle = usersStatsModalWindow.querySelector(".popup__title");
+const usersStatsModalInfoList = usersStatsModalWindow.querySelector(".popup__info");
+const usersStatsModalText = usersStatsModalWindow.querySelector(".popup__text");
+const usersStatsModalUserList = usersStatsModalWindow.querySelector(".popup__list");
+const logoElement = document.querySelector(".logo");
+
 let cardToDelete = null;
 let cardIdToDelete = null
 
@@ -132,6 +140,113 @@ const handleLikeCard = (likeButton, cardId, likeCountElement) => {
     .catch((err) => console.error('Ошибка лайка:', err));
 };
 
+const formatDate = (date) =>
+  date.toLocaleDateString("ru-RU", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
+  
+const createInfoString = (term, description) => {
+  const template = document.getElementById("popup-info-definition-template");
+  const infoElement = template.content.cloneNode(true);
+  
+  const termElement = infoElement.querySelector(".popup__info-term");
+  const descriptionElement = infoElement.querySelector(".popup__info-description");
+  
+  termElement.textContent = term;
+  descriptionElement.textContent = description;
+  
+  return infoElement;
+};
+
+const createUserBadge = (userName) => {
+  const template = document.getElementById("popup-info-user-preview-template");
+  const userElement = template.content.cloneNode(true);
+  
+  const badgeElement = userElement.querySelector(".popup__list-item");
+  badgeElement.textContent = userName;
+  
+  return userElement;
+};
+
+const handleLogoClick = () => {
+  usersStatsModalInfoList.innerHTML = '';
+  usersStatsModalUserList.innerHTML = '';
+  getCardList()
+    .then((cards) => {
+      usersStatsModalTitle.textContent = "Статистика пользователей";
+      const totalCards = cards.length;
+      usersStatsModalInfoList.append(
+        createInfoString("Всего карточек:", totalCards.toString())
+      );
+
+      if (cards.length > 0) {
+        const sortedCards = [...cards].sort((a, b) => 
+          new Date(b.createdAt) - new Date(a.createdAt)
+        );
+        
+        const newestCard = sortedCards[0];
+        const oldestCard = sortedCards[sortedCards.length - 1];
+        
+        usersStatsModalInfoList.append(
+          createInfoString(
+            "Первая создана:",
+            formatDate(new Date(oldestCard.createdAt))
+          )
+        );
+        
+        usersStatsModalInfoList.append(
+          createInfoString(
+            "Последняя создана:",
+            formatDate(new Date(newestCard.createdAt))
+          )
+        );
+      }
+
+      const userStats = {};
+      
+      cards.forEach(card => {
+        const ownerId = card.owner._id;
+        const ownerName = card.owner.name;        
+        if (!userStats[ownerId]) {
+          userStats[ownerId] = {
+            name: ownerName,
+            count: 0
+          };
+        }
+        userStats[ownerId].count++;
+      });
+      
+      const totalUsers = Object.keys(userStats).length;
+      usersStatsModalInfoList.append(
+        createInfoString("Всего пользователей:", totalUsers.toString())
+      );
+
+      const userCounts = Object.values(userStats).map(user => user.count);
+      const maxCards = Math.max(...userCounts);
+      usersStatsModalInfoList.append(
+        createInfoString("Максимум карточек от одного:", maxCards.toString())
+      );
+
+      const sortedUsers = Object.values(userStats).sort((a, b) => b.count - a.count);
+
+      usersStatsModalText.textContent = "Все пользователи:";
+
+      sortedUsers.forEach(user => {
+        usersStatsModalUserList.append(
+          createUserBadge(user.name)
+        );
+      });
+      openModalWindow(usersStatsModalWindow);
+    })
+    .catch((err) => {
+      console.log("Ошибка загрузки статистики:", err);
+      usersStatsModalTitle.textContent = "Ошибка загрузки данных";
+    });
+};
+
+
 // EventListeners
 profileForm.addEventListener("submit", handleProfileFormSubmit);
 cardForm.addEventListener("submit", handleCardFormSubmit);
@@ -172,6 +287,8 @@ removeCardForm.addEventListener("submit", (evt) => {
       renderLoading(submitButton, false, 'Удаление...', 'Да')
     });
 });
+
+logoElement.addEventListener("click", handleLogoClick);
 
 //настраиваем обработчики закрытия попапов
 const allPopups = document.querySelectorAll(".popup");
