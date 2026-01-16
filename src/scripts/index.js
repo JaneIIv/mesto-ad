@@ -57,10 +57,17 @@ const handleProfileFormSubmit = (evt) => {
     })
 };
 
-const handleAvatarFormSubmit = (evt) => {
+const handleAvatarFromSubmit = (evt) => {
   evt.preventDefault();
-  profileAvatar.style.backgroundImage = `url(${avatarInput.value})`;
-  closeModalWindow(avatarFormModalWindow);
+  setUserAvatar(avatarInput.value)
+    .then((userData) => {
+      profileAvatar.style.backgroundImage = `url(${userData.avatar})`;
+      closeModalWindow(avatarFormModalWindow);
+      avatarForm.reset();
+    })
+    .catch((err) => {
+      console.error('Ошибка:', err)
+    })
 };
 
 const handleCardFormSubmit = (evt) => {
