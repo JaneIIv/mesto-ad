@@ -45,10 +45,16 @@ const handlePreviewPicture = ({ name, link }) => {
 };
 
 const handleProfileFormSubmit = (evt) => {
-  evt.preventDefault();
-  profileTitle.textContent = profileTitleInput.value;
-  profileDescription.textContent = profileDescriptionInput.value;
-  closeModalWindow(profileFormModalWindow);
+  evt.preventDefault();;
+  setUserInfo(profileTitleInput.value, profileDescriptionInput.value)
+    .then((userData) => {
+      profileTitle.textContent = userData.name;
+      profileDescription.textContent = userData.about;
+      closeModalWindow(profileFormModalWindow);
+    })
+    .catch((err) => {
+      console.error('Ошибка:', err)
+    })
 };
 
 const handleAvatarFormSubmit = (evt) => {
