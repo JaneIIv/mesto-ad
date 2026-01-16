@@ -6,7 +6,6 @@
   Из index.js не допускается что то экспортировать
 */
 
-import { initialCards } from "./cards.js";
 import { createCardElement, deleteCard, likeCard } from "./components/card.js";
 import { openModalWindow, closeModalWindow, setCloseModalWindowEventListeners } from "./components/modal.js";
 import { enableValidation, clearValidation } from "./components/validation.js";
@@ -102,15 +101,15 @@ openCardFormButton.addEventListener("click", () => {
 });
 
 // отображение карточек
-initialCards.forEach((data) => {
-  placesWrap.append(
-    createCardElement(data, {
-      onPreviewPicture: handlePreviewPicture,
-      onLikeIcon: likeCard,
-      onDeleteCard: deleteCard,
-    })
-  );
-});
+/// initialCards.forEach((data) => {
+///  placesWrap.append(
+//    createCardElement(data, {
+//      onPreviewPicture: handlePreviewPicture,
+//      onLikeIcon: likeCard,
+//      onDeleteCard: deleteCard,
+//    })
+//  );
+//});
 
 //настраиваем обработчики закрытия попапов
 const allPopups = document.querySelectorAll(".popup");
@@ -128,3 +127,23 @@ const validationSettings = {
 };
 
 enableValidation(validationSettings);
+
+Promise.all([getUserInfo(), getCardList()])
+  .then(([userData, cards]) => {
+    currentUserId = userData._id;
+    profileTitle.textContent = userData.name;
+    profileDescription.textContent = userData.about;
+    profileAvatar.style.backgroundImage = `url(${userData.avatar})`;
+    cards.forEach((cardData) => {
+      placesWrap.append(
+        createCardElement(cardData, {
+          onPreviewPicture: handlePreviewPicture,
+          onLikeCard: handleLikeCard,
+          onDeleteCard: handleDeleteCardClick,
+        }, currentUserId)
+      );
+    });
+  })
+  .catch((err) => {
+    console.error('Ошибка загрузки:', err)
+  }); 
