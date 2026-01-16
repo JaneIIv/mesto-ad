@@ -5,3 +5,13 @@ const config = {
     "Content-Type": "application/json",
   },
 };
+
+const getResponseData = (res) => {
+  return res.ok ? res.json() : Promise.reject(`Ошибка: ${res.status}`);
+};
+
+export const getUserInfo = () => {
+  return fetch(`${config.baseUrl}/users/me`, { 
+    headers: config.headers, 
+  }).then(getResponseData); 
+};
