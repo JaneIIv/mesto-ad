@@ -51,7 +51,7 @@ const usersStatsModalUserList = usersStatsModalWindow.querySelector(".popup__lis
 const logoElement = document.querySelector(".logo");
 
 let cardToDelete = null;
-let cardIdToDelete = null
+let cardIdToDelete = null;
 
 const renderLoading = (button, isLoading, loadingText = 'Сохранение...', defaultText = 'Сохранить') => {
   button.textContent = isLoading ? loadingText : defaultText;
